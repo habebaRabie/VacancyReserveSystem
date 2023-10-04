@@ -119,6 +119,18 @@ namespace HoildaysCalcApp
             }
         }
 
+        private int CountWorkingDaysOfEmployee(MySqlConnection connection, int employeeId)
+        {
+            string query = "SELECT SUM(holiday_days_number) FROM `holidays` where emp_ID= @EmpID";
+            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            {
+                cmd.Parameters.AddWithValue("@EmpID", employeeId);
+
+                int vacdays = Convert.ToInt32(cmd.ExecuteScalar());
+                return vacdays;
+            }
+        }
+
         protected void AddWorkingDaysButton_Click(object sender, EventArgs e)
         {
             // Get the current vac_days from the database for the employee
@@ -135,7 +147,7 @@ namespace HoildaysCalcApp
                 try
                 {
                     connection.Open();
-                    string sqlQuery = "SELECT emp_ID, vac_days FROM Employee WHERE emp_name = @Name";
+                    string sqlQuery = "SELECT emp_ID FROM Employee WHERE emp_name = @Name";
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, connection))
                     {
@@ -145,16 +157,15 @@ namespace HoildaysCalcApp
                             if(reader.Read())
                             {
                                 int employeeId = reader.GetInt32("emp_ID");
-                                vacDays = reader.GetInt32("vac_days");
                                 reader.Close();
                                 workingDays = CountWorkingDays(startDate, endDate);
+                                vacDays = CountWorkingDaysOfEmployee(connection, employeeId);
 
                                 // Insert the data into the holidays table
                                 InsertHolidayData(connection, employeeId, startDate, endDate, vacancyType, workingDays);
 
                                 // Update the employee's vacDays in the database
                                 int newVacDays = vacDays + workingDays;
-                                UpdateEmployeeVacDays(connection, employeeId, newVacDays);
 
                                 ResultLabel.Text = $"Enjoy your holiday! You have taken {newVacDays} days as a holiday until now";
                             }
@@ -189,7 +200,7 @@ namespace HoildaysCalcApp
                 try
                 {
                     connection.Open();
-                    string sqlQuery = "SELECT emp_ID, emp_max_days, vac_days FROM Employee WHERE emp_name = @Name";
+                    string sqlQuery = "SELECT emp_ID, emp_max_days FROM Employee WHERE emp_name = @Name";
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, connection))
                     {
@@ -199,12 +210,12 @@ namespace HoildaysCalcApp
                             if (reader.Read())
                             {
                                 int employeeId = reader.GetInt32("emp_ID");
-                                vacDays = reader.GetInt32("vac_days");
                                 employeeMaxDays = reader.GetInt32("emp_max_days");
 
                                 reader.Close();
 
                                 workingDays = CountWorkingDays(startDate, endDate);
+                                vacDays = CountWorkingDaysOfEmployee(connection, employeeId);
 
                                 // Check if the employee has enough remaining vacation days
                                 if (vacDays + workingDays <= employeeMaxDays)
@@ -281,16 +292,6 @@ namespace HoildaysCalcApp
                 cmd.Parameters.AddWithValue("@StartDate", startDate);
                 cmd.Parameters.AddWithValue("@EndDate", endDate);
                 cmd.Parameters.AddWithValue("@WorkingDays", workingDays);
-                cmd.ExecuteNonQuery();
-            }
-        }
-        private void UpdateEmployeeVacDays(MySqlConnection connection, int employeeId, int newVacDays)
-        {
-            string query = "UPDATE Employee SET vac_days = @NewVacDays WHERE emp_ID = @EmployeeId";
-            using (MySqlCommand cmd = new MySqlCommand(query, connection))
-            {
-                cmd.Parameters.AddWithValue("@EmployeeId", employeeId);
-                cmd.Parameters.AddWithValue("@NewVacDays", newVacDays);
                 cmd.ExecuteNonQuery();
             }
         }
