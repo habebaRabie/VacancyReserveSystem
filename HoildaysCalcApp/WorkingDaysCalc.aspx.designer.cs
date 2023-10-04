@@ -15,22 +15,22 @@ namespace HoildaysCalcApp
     {
 
         /// <summary>
-        /// EmployeeNameTextBox control.
+        /// EmployeeNameDropDown control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox EmployeeNameTextBox;
+        protected global::System.Web.UI.WebControls.DropDownList EmployeeNameDropDown;
 
         /// <summary>
-        /// rfvName control.
+        /// VacancyTypeDropDown control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvName;
+        protected global::System.Web.UI.WebControls.DropDownList VacancyTypeDropDown;
 
         /// <summary>
         /// Calendar1 control.

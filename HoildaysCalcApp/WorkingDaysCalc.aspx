@@ -7,10 +7,20 @@
         <div>
             <div>
                 <label class="lead" style="color: #333; background-color: #f0f0f0;">Name</label>
-                <asp:TextBox ID="EmployeeNameTextBox" runat="server"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvName" ControlToValidate="EmployeeNameTextBox" ErrorMessage="Required" Display="Dynamic" runat="server" />
+                <asp:DropDownList ID="EmployeeNameDropDown" runat="server" AppendDataBoundItems="true">
+                    <asp:ListItem Text="Select an Employee" Value="" />
+                </asp:DropDownList>
 
             </div>
+
+            <div>
+                <label class="lead" style="color: #333; background-color: #f0f0f0;">Name</label>
+                <asp:DropDownList ID="VacancyTypeDropDown" runat="server" AppendDataBoundItems="true">
+                    <asp:ListItem Text="Select the vacancy type" Value="" />
+                </asp:DropDownList>
+
+            </div>
+
             <div>
                 <label class="lead" style="color: #333; background-color: #f0f0f0;">Start Date</label>
 

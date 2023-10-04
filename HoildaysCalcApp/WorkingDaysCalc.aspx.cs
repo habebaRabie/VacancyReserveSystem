@@ -8,6 +8,8 @@ using System.Web.UI.WebControls;
 using System.Configuration;
 using System.Data;
 using System.Xml.Linq;
+using System.Collections;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace HoildaysCalcApp
 {
@@ -15,9 +17,72 @@ namespace HoildaysCalcApp
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            Calendar1.SelectedDate = DateTime.Now.Date;
-            Calendar2.SelectedDate = DateTime.Now.Date;
+            /* Calendar1.SelectedDate = DateTime.Now.Date;
+             Calendar2.SelectedDate = DateTime.Now.Date;*/
+            PopulateEmployeeNames();
+            PopulateVacancyType();
         }
+
+        private void PopulateEmployeeNames()
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Select employee names from the database
+                    string selectQuery = "SELECT emp_name FROM Employee";
+                    using (MySqlCommand cmd = new MySqlCommand(selectQuery, connection))
+                    {
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            EmployeeNameDropDown.DataSource = reader;
+                            EmployeeNameDropDown.DataTextField = "emp_name";
+                            EmployeeNameDropDown.DataValueField = "emp_name";
+                            EmployeeNameDropDown.DataBind();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ResultLabel.Text = "Error: " + ex.Message;
+            }
+        }
+
+        private void PopulateVacancyType()
+        {
+            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Select Vacancy Type from the database
+                    string selectQuery = "SELECT vac_name FROM vacancytype";
+                    using (MySqlCommand cmd = new MySqlCommand(selectQuery, connection))
+                    {
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            VacancyTypeDropDown.DataSource = reader;
+                            VacancyTypeDropDown.DataTextField = "vac_name";
+                            VacancyTypeDropDown.DataValueField = "vac_name";
+                            VacancyTypeDropDown.DataBind();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ResultLabel.Text = "Error: " + ex.Message;
+            }
+        }
+
 
         protected List<DateTime> GetPublicHolidays()
         {
@@ -31,14 +96,14 @@ namespace HoildaysCalcApp
                     connection.Open();
 
                     // Select all holiday dates from the database
-                    string selectQuery = "SELECT holidayDate FROM PublicHolidays";
+                    string selectQuery = "SELECT holiday_date FROM publicholidays";
                     using (MySqlCommand cmd = new MySqlCommand(selectQuery, connection))
                     {
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                DateTime holidayDate = reader.GetDateTime("holidayDate");
+                                DateTime holidayDate = reader.GetDateTime("holiday_date");
                                 retrievedHolidays.Add(holidayDate);
                             }
                         }
@@ -56,8 +121,9 @@ namespace HoildaysCalcApp
 
         protected void AddWorkingDaysButton_Click(object sender, EventArgs e)
         {
-            // Get the current vacDays from the database for the employee
-            string employeeName = EmployeeNameTextBox.Text;
+            // Get the current vac_days from the database for the employee
+            string employeeName = EmployeeNameDropDown.SelectedValue;
+            string vacancyType = VacancyTypeDropDown.SelectedValue;
             DateTime startDate = DateTime.Parse(Calendar1.SelectedDate.ToString("D"));
             DateTime endDate = DateTime.Parse(Calendar2.SelectedDate.ToString("D"));
 
@@ -69,7 +135,7 @@ namespace HoildaysCalcApp
                 try
                 {
                     connection.Open();
-                    string sqlQuery = "SELECT id, vacDays FROM Employee WHERE name = @Name";
+                    string sqlQuery = "SELECT emp_ID, vac_days FROM Employee WHERE emp_name = @Name";
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, connection))
                     {
@@ -78,13 +144,13 @@ namespace HoildaysCalcApp
                         {
                             if(reader.Read())
                             {
-                                int employeeId = reader.GetInt32("id");
-                                vacDays = reader.GetInt32("vacDays");
+                                int employeeId = reader.GetInt32("emp_ID");
+                                vacDays = reader.GetInt32("vac_days");
                                 reader.Close();
                                 workingDays = CountWorkingDays(startDate, endDate);
 
                                 // Insert the data into the holidays table
-                                InsertHolidayData(connection, employeeId, startDate, endDate);
+                                InsertHolidayData(connection, employeeId, startDate, endDate, vacancyType, workingDays);
 
                                 // Update the employee's vacDays in the database
                                 int newVacDays = vacDays + workingDays;
@@ -111,19 +177,19 @@ namespace HoildaysCalcApp
 
         protected void CalculateButton_Click(object sender, EventArgs e)
         {
-            string employeeName = EmployeeNameTextBox.Text;
+            string employeeName = EmployeeNameDropDown.SelectedValue;
             DateTime startDate = DateTime.Parse(Calendar1.SelectedDate.ToString("D"));
             DateTime endDate = DateTime.Parse(Calendar2.SelectedDate.ToString("D"));
 
             string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
-            int vacDays, workingDays;
+            int vacDays, workingDays, employeeMaxDays;
 
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 try
                 {
                     connection.Open();
-                    string sqlQuery = "SELECT id, vacDays FROM Employee WHERE name = @Name";
+                    string sqlQuery = "SELECT emp_ID, emp_max_days, vac_days FROM Employee WHERE emp_name = @Name";
 
                     using (MySqlCommand cmd = new MySqlCommand(sqlQuery, connection))
                     {
@@ -132,15 +198,16 @@ namespace HoildaysCalcApp
                         {
                             if (reader.Read())
                             {
-                                int employeeId = reader.GetInt32("id");
-                                vacDays = reader.GetInt32("vacDays");
+                                int employeeId = reader.GetInt32("emp_ID");
+                                vacDays = reader.GetInt32("vac_days");
+                                employeeMaxDays = reader.GetInt32("emp_max_days");
 
                                 reader.Close();
 
                                 workingDays = CountWorkingDays(startDate, endDate);
 
                                 // Check if the employee has enough remaining vacation days
-                                if (vacDays + workingDays <= 30)
+                                if (vacDays + workingDays <= employeeMaxDays)
                                 {
                                     // Check if the selected days are not already in the holidays table
                                     if (!IsDaysAlreadyBooked(connection, employeeId, startDate, endDate))
@@ -155,7 +222,7 @@ namespace HoildaysCalcApp
                                 }
                                 else
                                 {
-                                    int remainingDays = 30 - vacDays;
+                                    int remainingDays = employeeMaxDays - vacDays;
                                     ResultLabel.Text = $"You only have {remainingDays} days left and you are asking for {workingDays}!";
                                 }
                             }
@@ -164,7 +231,6 @@ namespace HoildaysCalcApp
                                 ResultLabel.Text = $"Employee {employeeName} not found.";
                             }
                         }
-
                     }
                 }
                 catch (Exception ex)
@@ -180,7 +246,7 @@ namespace HoildaysCalcApp
 
         private bool IsDaysAlreadyBooked(MySqlConnection connection, int employeeId, DateTime startDate, DateTime endDate)
         {
-            string query = "SELECT COUNT(*) FROM holidays WHERE EmpID = @EmployeeId AND start_date <= @EndDate AND end_date >= @StartDate";
+            string query = "SELECT COUNT(*) FROM holidays WHERE emp_ID = @EmployeeId AND start_date <= @EndDate AND end_date >= @StartDate";
             using (MySqlCommand cmd = new MySqlCommand(query, connection))
             {
                 cmd.Parameters.AddWithValue("@EmployeeId", employeeId);
@@ -192,21 +258,35 @@ namespace HoildaysCalcApp
             }
         }
 
-
-        private void InsertHolidayData(MySqlConnection connection, int employeeId, DateTime startDate, DateTime endDate)
+        private int getVacancyType(MySqlConnection connection, string vacancyType)
         {
-            string query = "INSERT INTO holidays (EmpID, start_date, end_date) VALUES (@EmployeeId, @StartDate, @EndDate)";
+            string query = "SELECT vac_id FROM vacancytype WHERE vac_name= @VacancyType";
+            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            {
+                cmd.Parameters.AddWithValue("@VacancyType", vacancyType);
+
+                int vacId = Convert.ToInt32(cmd.ExecuteScalar());
+                return vacId;
+            }
+        }
+
+        private void InsertHolidayData(MySqlConnection connection, int employeeId, DateTime startDate, DateTime endDate, string vacancyType, int workingDays)
+        {
+            int vacancyId = getVacancyType(connection, vacancyType);
+            string query = "INSERT INTO holidays (emp_ID, vac_ID, start_date, end_date, holiday_days_number) VALUES (@EmployeeId, @VacancyId, @StartDate, @EndDate, @WorkingDays)";
             using (MySqlCommand cmd = new MySqlCommand(query, connection))
             {
                 cmd.Parameters.AddWithValue("@EmployeeId", employeeId);
+                cmd.Parameters.AddWithValue("@VacancyId", vacancyId);
                 cmd.Parameters.AddWithValue("@StartDate", startDate);
                 cmd.Parameters.AddWithValue("@EndDate", endDate);
+                cmd.Parameters.AddWithValue("@WorkingDays", workingDays);
                 cmd.ExecuteNonQuery();
             }
         }
         private void UpdateEmployeeVacDays(MySqlConnection connection, int employeeId, int newVacDays)
         {
-            string query = "UPDATE Employee SET vacDays = @NewVacDays WHERE id = @EmployeeId";
+            string query = "UPDATE Employee SET vac_days = @NewVacDays WHERE emp_ID = @EmployeeId";
             using (MySqlCommand cmd = new MySqlCommand(query, connection))
             {
                 cmd.Parameters.AddWithValue("@EmployeeId", employeeId);
