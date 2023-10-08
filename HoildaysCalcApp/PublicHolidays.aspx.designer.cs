@@ -24,13 +24,22 @@ namespace HoildaysCalcApp
         protected global::System.Web.UI.WebControls.Literal ltError;
 
         /// <summary>
-        /// newHolidayDate control.
+        /// newHolidayStartDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Calendar newHolidayDate;
+        protected global::System.Web.UI.WebControls.Calendar newHolidayStartDate;
+
+        /// <summary>
+        /// newHolidayEndDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Calendar newHolidayEndDate;
 
         /// <summary>
         /// txtNewHolidayDesc control.

@@ -121,12 +121,13 @@ namespace HoildaysCalcApp
 
         private int CountWorkingDaysOfEmployee(MySqlConnection connection, int employeeId)
         {
-            string query = "SELECT SUM(holiday_days_number) FROM `holidays` where emp_ID= @EmpID";
+            string query = "SELECT COALESCE(SUM(holiday_days_number), 0) FROM `holidays` WHERE emp_ID = @EmpID AND vac_ID = 1";
             using (MySqlCommand cmd = new MySqlCommand(query, connection))
             {
                 cmd.Parameters.AddWithValue("@EmpID", employeeId);
 
                 int vacdays = Convert.ToInt32(cmd.ExecuteScalar());
+
                 return vacdays;
             }
         }
@@ -246,7 +247,7 @@ namespace HoildaysCalcApp
                 }
                 catch (Exception ex)
                 {
-                    ResultLabel.Text = "Error: " + ex.Message;
+                    ResultLabel.Text = "Error22: " + ex.Message;
                 }
                 finally
                 {
@@ -303,7 +304,6 @@ namespace HoildaysCalcApp
 
             for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
             {
-                // Check if the current day is not Saturday (DayOfWeek.Saturday) or Sunday (DayOfWeek.Sunday)
                 if (date.DayOfWeek != DayOfWeek.Friday && date.DayOfWeek != DayOfWeek.Saturday)
                 {
                     // Check if the current day is not a public holiday
@@ -313,7 +313,6 @@ namespace HoildaysCalcApp
                     }
                 }
             }
-
             return workingDays;
         }
 

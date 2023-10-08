@@ -51,6 +51,7 @@
             </div>
             <br />
             <asp:Label class="lead" style="color: #333; background-color: #f0f0f0;" ID="ResultLabel" runat="server" EnableViewState="false" />
+            
             <div>
                 <asp:Button CssClass="btn btn-primary" ID="AddWorkingDaysButton" runat="server" Text="Add Working Days to VacDays" OnClick="AddWorkingDaysButton_Click" Visible="false" />
             </div>

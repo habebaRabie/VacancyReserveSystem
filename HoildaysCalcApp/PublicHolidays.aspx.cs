@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace HoildaysCalcApp
 {
@@ -101,6 +102,62 @@ namespace HoildaysCalcApp
             }
         }
 
+        protected List<DateTime> GetPublicHolidays()
+        {
+            List<DateTime> retrievedHolidays = new List<DateTime>();
+            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Select all holiday dates from the database
+                    string selectQuery = "SELECT holiday_date FROM publicholidays";
+                    using (MySqlCommand cmd = new MySqlCommand(selectQuery, connection))
+                    {
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                DateTime holidayDate = reader.GetDateTime("holiday_date");
+                                retrievedHolidays.Add(holidayDate);
+                            }
+                        }
+                    }
+                }
+
+                return retrievedHolidays;
+            }
+            catch (Exception ex)
+            {
+                ltError.Text = "Error: " + ex.Message;
+                return null;
+            }
+        }
+
+        private void AddSeveralPublicHolidays(DateTime startDate, DateTime endDate, MySqlConnection connection, string txtNewHolidayDesc)
+        {
+            List<DateTime> publicHolidays = GetPublicHolidays();
+
+            for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                // Check if the current day is not a public holiday
+                if (!publicHolidays.Contains(date))
+                {
+                    string query = "INSERT INTO publicholidays (holiday_date, holiday_desc) VALUES (@holidayDate, @holidayDesc)";
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@holidayDate", date);
+                        cmd.Parameters.AddWithValue("@holidayDesc", txtNewHolidayDesc);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            ltError.Text = "Public Holidays have been added successfully ";
+        }
+
         protected void btnInsertNewHoliday_Click(object sender, EventArgs e)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
@@ -110,29 +167,23 @@ namespace HoildaysCalcApp
                 try
                 {
                     connection.Open();
-                    DateTime newHolidayDate1 = newHolidayDate.SelectedDate;
+                    DateTime newHolidayStartDate1 = newHolidayStartDate.SelectedDate;
+/*                    newHolidayEndDate.SelectedDate = newHolidayStartDate1.Date;
+*/                    DateTime newHolidayEndDate1 = newHolidayEndDate.SelectedDate;
 
-
-
-                    // Make sure newHolidayDate is a valid DateTime and txtNewHolidayDesc is not null or empty
-                    if (DateTime.TryParse(newHolidayDate1.ToString(), out DateTime holidayDate) && !string.IsNullOrEmpty(txtNewHolidayDesc.Text))
+                    if (DateTime.TryParse(newHolidayStartDate1.ToString(), out DateTime holidayStartDate) && DateTime.TryParse(newHolidayEndDate1.ToString(), out DateTime holidayEndDate) && !string.IsNullOrEmpty(txtNewHolidayDesc.Text))
                     {
-                        string sqlQuery = "INSERT INTO publicholidays (holiday_date, holiday_desc) VALUES (@holidayDate, @holidayDesc)";
-                        MySqlCommand command = new MySqlCommand(sqlQuery, connection);
-
-                        // Use the correct parameter names
-                        command.Parameters.AddWithValue("@holidayDate", newHolidayDate1);
-                        command.Parameters.AddWithValue("@holidayDesc", txtNewHolidayDesc.Text);
-                        command.ExecuteNonQuery();
-
+                        AddSeveralPublicHolidays(holidayStartDate, holidayEndDate, connection, txtNewHolidayDesc.Text);
                         DataBindToGrid();
-                        newHolidayDate.SelectedDate = DateTime.Now;
+                        newHolidayStartDate.SelectedDate = DateTime.Now;
+                        newHolidayEndDate.SelectedDate = DateTime.Now;
                         txtNewHolidayDesc.Text = "";
                     }
                     else
                     {
-                        ltError.Text = newHolidayDate.ToString();
+                        ltError.Text = "Please enter valid date and description";
                     }
+
                 }
                 catch (Exception ex)
                 {

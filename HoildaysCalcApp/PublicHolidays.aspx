@@ -7,9 +7,23 @@
     <div>
         <h5 class="lead">Add New Public Holiday</h5>
         <div>
-            <label for="newHolidayDate">Holiday's Date:</label><br />
+            <label for="newHolidayStartDate">Holiday's Date:</label><br />
 
-             <asp:Calendar AutoPostback = "false" EnableViewState="true" ID="newHolidayDate" runat="server" BackColor="White" BorderColor="White" BorderWidth="1px" Font-Names="Verdana" Font-Size="9pt" ForeColor="Black" Height="190px" NextPrevFormat="FullMonth" Width="250px">    
+             <asp:Calendar AutoPostback = "false" EnableViewState="true" ID="newHolidayStartDate" runat="server" BackColor="White" BorderColor="White" BorderWidth="1px" Font-Names="Verdana" Font-Size="9pt" ForeColor="Black" Height="190px" NextPrevFormat="FullMonth" Width="250px">    
+                 <DayHeaderStyle Font-Bold="True" Font-Size="8pt"></DayHeaderStyle><NextPrevStyle VerticalAlign="Bottom" Font-Bold="True" Font-Size="8pt" ForeColor="#333333"></NextPrevStyle>
+                 <OtherMonthDayStyle ForeColor="#999999"></OtherMonthDayStyle>
+                 <SelectedDayStyle BackColor="#333399" ForeColor="White"></SelectedDayStyle>
+                 <TitleStyle BackColor="White" BorderColor="Black" BorderWidth="0px" Font-Bold="True" Font-Size="12pt" ForeColor="#333399"></TitleStyle>
+                 <TodayDayStyle BackColor="#CCCCCC"></TodayDayStyle>
+             </asp:Calendar>
+             <br />
+
+        </div>
+
+        <div>
+            <label for="newHolidayEndDate">Holiday's Date:</label><br />
+
+             <asp:Calendar AutoPostback = "false" EnableViewState="true" ID="newHolidayEndDate" runat="server" BackColor="White" BorderColor="White" BorderWidth="1px" Font-Names="Verdana" Font-Size="9pt" ForeColor="Black" Height="190px" NextPrevFormat="FullMonth" Width="250px">    
                  <DayHeaderStyle Font-Bold="True" Font-Size="8pt"></DayHeaderStyle><NextPrevStyle VerticalAlign="Bottom" Font-Bold="True" Font-Size="8pt" ForeColor="#333333"></NextPrevStyle>
                  <OtherMonthDayStyle ForeColor="#999999"></OtherMonthDayStyle>
                  <SelectedDayStyle BackColor="#333399" ForeColor="White"></SelectedDayStyle>
