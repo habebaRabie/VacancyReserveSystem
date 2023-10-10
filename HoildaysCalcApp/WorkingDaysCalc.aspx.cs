@@ -13,14 +13,18 @@ using System.Runtime.InteropServices.ComTypes;
 
 namespace HoildaysCalcApp
 {
-    public partial class Contact : Page
+    public partial class WorkDaysCalc : Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
             /* Calendar1.SelectedDate = DateTime.Now.Date;
              Calendar2.SelectedDate = DateTime.Now.Date;*/
-            PopulateEmployeeNames();
-            PopulateVacancyType();
+            if (!IsPostBack)
+            {
+                PopulateEmployeeNames();
+                PopulateVacancyType();
+            }
+            
         }
 
         private void PopulateEmployeeNames()

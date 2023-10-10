@@ -11,7 +11,7 @@ namespace HoildaysCalcApp
 {
 
 
-    public partial class WebForm1
+    public partial class PubHolidays
     {
 
         /// <summary>

@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 namespace HoildaysCalcApp
 {
-    public partial class WebForm2 : System.Web.UI.Page
+    public partial class VecType : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {

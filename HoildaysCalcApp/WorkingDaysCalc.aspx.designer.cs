@@ -11,7 +11,7 @@ namespace HoildaysCalcApp
 {
 
 
-    public partial class Contact
+    public partial class WorkDaysCalc
     {
 
         /// <summary>

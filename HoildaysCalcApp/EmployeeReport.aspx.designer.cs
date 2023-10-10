@@ -11,43 +11,43 @@ namespace HoildaysCalcApp
 {
 
 
-    public partial class VecType
+    public partial class EmpReport
     {
 
         /// <summary>
-        /// ltErrorVac control.
+        /// EmpNameDropDown control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltErrorVac;
+        protected global::System.Web.UI.WebControls.DropDownList EmpNameDropDown;
 
         /// <summary>
-        /// txtnewVacType control.
+        /// WelcomeEmp control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtnewVacType;
+        protected global::System.Web.UI.WebControls.Label WelcomeEmp;
 
         /// <summary>
-        /// btnInsertNewVacancy control.
+        /// gvEmpReport control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnInsertNewVacancy;
+        protected global::System.Web.UI.WebControls.GridView gvEmpReport;
 
         /// <summary>
-        /// gvVacancies control.
+        /// ErrorLabelEmpVac control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvVacancies;
+        protected global::System.Web.UI.WebControls.Label ErrorLabelEmpVac;
     }
 }

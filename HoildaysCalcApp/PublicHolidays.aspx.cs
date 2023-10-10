@@ -12,7 +12,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace HoildaysCalcApp
 {
-    public partial class WebForm1 : System.Web.UI.Page
+    public partial class PubHolidays : System.Web.UI.Page
     {
         public class Holidays
         {
