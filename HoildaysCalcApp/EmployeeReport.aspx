@@ -12,20 +12,19 @@
 
         <div>
             <asp:Label class="lead" style="color: #333; background-color: #f0f0f0; text-align:center" ID="WelcomeEmp" runat="server" EnableViewState="false" />
-
+        </div>
+        <br />
+        <div>
+            <asp:Label class="lead" style="color: #333; background-color: #f0f0f0; text-align:center" ID="EmpVacDaysRemain" runat="server" EnableViewState="false" />
         </div>
 
         <div>
-            <h5 class="lead" >The Annual Report for  Vacations</h5>
-            <asp:GridView ID="gvEmpReport" CssClass="table table-striped color-table" runat="server" AutoGenerateColumns="false" OnRowDeleting="gvEmpReport_RowDeleting" OnRowEditing="gvEmpReport_RowEditing" OnRowUpdating="gvEmpReport_RowUpdating" OnRowCancelingEdit="gvEmpReport_RowCancelingEdit">
+            <asp:GridView ID="gvEmpReport" CssClass="table table-striped color-table" runat="server" AutoGenerateColumns="false">
                 <Columns>
                      <asp:BoundField DataField="vac_name" HeaderText="Vacation Name"  />
                      <asp:BoundField DataField="start_date" HeaderText="Start Date" DataFormatString="{0:yyyy-MM-dd}"  />
                     <asp:BoundField DataField="end_date" HeaderText="End Date"  DataFormatString="{0:yyyy-MM-dd}" />
                     <asp:BoundField DataField="holiday_days_number" HeaderText="Number of Days" />
-        
-                    <asp:CommandField ShowEditButton="true" />
-                    <asp:CommandField ShowDeleteButton="true" />
                 
                 </Columns>
             </asp:GridView>

@@ -54,30 +54,83 @@ namespace HoildaysCalcApp
             }
         }
 
-        protected void gvEmpReport_RowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
-
-        }
-
-        protected void gvEmpReport_RowEditing(object sender, GridViewEditEventArgs e)
-        {
-
-        }
-
-        protected void gvEmpReport_RowUpdating(object sender, GridViewUpdateEventArgs e)
-        {
-
-        }
-
-        protected void gvEmpReport_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-        {
-
-        }
-
         protected void EmpNameDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedName = EmpNameDropDown.SelectedItem.Text;
             WelcomeEmp.Text = $"<p>This is the annual report of the employee named \"{selectedName}\"</p>";
+
+            string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
+
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string sqlQuery = "SELECT vac_name, start_date, end_date, holiday_days_number " +
+                                      "FROM holidays " +
+                                      "JOIN vacancytype ON holidays.vac_ID = vacancytype.vac_ID " +
+                                      "JOIN employee ON employee.emp_ID = holidays.emp_ID " +
+                                      "WHERE employee.emp_name=@EmpName";
+
+                    MySqlCommand command = new MySqlCommand(sqlQuery, connection);
+                    command.Parameters.AddWithValue("@EmpName", selectedName);
+
+                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+                    {
+                        DataSet dt = new DataSet();
+                        adapter.Fill(dt);
+
+                        if (dt.Tables.Count > 0 && dt.Tables[0].Rows.Count > 0)
+                        {
+                            gvEmpReport.DataSource = dt;
+                            gvEmpReport.DataBind();
+                            gvEmpReport.Visible = true;
+                            GetHolidayDaysAndMaxDays(connection, selectedName);
+                        }
+                        else
+                        {
+                            // Handle case where no data is found for the selected employee.
+                            EmpVacDaysRemain.Text = "This employee is a hardworker ! No vacancy days found! ";
+                            gvEmpReport.DataSource = null;
+                            gvEmpReport.DataBind();
+
+                            gvEmpReport.Visible = false;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorLabelEmpVac.Text = "Error: " + ex.Message;
+            }
         }
+
+        private void GetHolidayDaysAndMaxDays(MySqlConnection connection, string employeeName)
+        {
+            string query = "SELECT COALESCE(SUM(holiday_days_number), 0) AS totalDays, emp_max_days " +
+                           "FROM holidays " +
+                           "JOIN employee ON holidays.emp_ID = employee.emp_ID " +
+                           "WHERE vac_ID = 1 AND emp_name=@EmpName";
+
+            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            {
+                cmd.Parameters.AddWithValue("@EmpName", employeeName);
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        int totalHolidayDays = Convert.ToInt32(reader["totalDays"]);
+                        int empMaxDays = Convert.ToInt32(reader["emp_max_days"]);
+                        int remainingDays = empMaxDays - totalHolidayDays;
+
+                        EmpVacDaysRemain.Text = employeeName + " has taken " + totalHolidayDays + " days from " + empMaxDays + ", There are " + remainingDays + " days left for him";
+                    }
+                }
+            }
+        }
+
+
     }
 }

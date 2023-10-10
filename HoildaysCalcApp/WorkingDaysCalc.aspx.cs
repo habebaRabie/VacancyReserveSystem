@@ -189,6 +189,11 @@ namespace HoildaysCalcApp
 
             // Hide the "Add Working Days" button again
             AddWorkingDaysButton.Visible = false;
+            EmployeeNameDropDown.ClearSelection();
+            VacancyTypeDropDown.ClearSelection();
+            Calendar1.SelectedDate = DateTime.Now;
+            Calendar2.SelectedDate = DateTime.Now;
+
         }
 
         protected void CalculateButton_Click(object sender, EventArgs e)
