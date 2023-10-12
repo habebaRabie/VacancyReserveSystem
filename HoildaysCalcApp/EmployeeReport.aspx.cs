@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using MySql.Data.MySqlClient;
-using System.Web.UI.WebControls;
 using System.Configuration;
 using System.Data;
-using System.Xml.Linq;
-using System.Collections;
-using System.Runtime.InteropServices.ComTypes;
+using iTextSharp.text.html.simpleparser;
+using iTextSharp.text.pdf;
+using iTextSharp.text;
+using System.IO;
+using System.Web.UI.HtmlControls;
+using iTextSharp.tool.xml;
+
 
 namespace HoildaysCalcApp
 {
@@ -57,7 +58,7 @@ namespace HoildaysCalcApp
         protected void EmpNameDropDown_SelectedIndexChanged(object sender, EventArgs e)
         {
             string selectedName = EmpNameDropDown.SelectedItem.Text;
-            WelcomeEmp.Text = $"<p>This is the annual report of the employee named \"{selectedName}\"</p>";
+            WelcomeEmp.Text = $"<p>This is the annual report of \"{selectedName}\"</p>";
 
             string connectionString = ConfigurationManager.ConnectionStrings["MySqlConnection"].ConnectionString;
 
@@ -135,23 +136,5 @@ namespace HoildaysCalcApp
             }
         }
 
-        protected void ExportPDF_Click(object sender, EventArgs e)
-        {
-            // Create label content
-            string labelContent = "Label content.";
-
-            // Specify the file path where the PDF will be saved
-            string filePath = Server.MapPath("~/App_Data/exported.pdf");
-
-            // Check if the GridView has data source
-            if (gvEmpReport.DataSource != null)
-            {
-                // Cast the data source of the GridView to a DataTable
-                DataTable dataTable = gvEmpReport.DataSource as DataTable;
-
-                // Generate the PDF and save it to the specified file path
-                PdfGenerator.GeneratePdfFromDataSource(dataTable, labelContent, filePath);
-            }
-        }
     }
 }

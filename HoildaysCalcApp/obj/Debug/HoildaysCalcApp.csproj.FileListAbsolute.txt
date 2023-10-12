@@ -213,3 +213,4 @@ D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\de\PdfSharp.resources.dl
 D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\de\PdfSharp.Charting.resources.dll
 D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\itextsharp.dll
 D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\itextsharp.xml
+D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\itextsharp.xmlworker.dll
