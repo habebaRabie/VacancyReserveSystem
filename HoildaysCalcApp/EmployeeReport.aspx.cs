@@ -125,12 +125,33 @@ namespace HoildaysCalcApp
                         int empMaxDays = Convert.ToInt32(reader["emp_max_days"]);
                         int remainingDays = empMaxDays - totalHolidayDays;
 
-                        EmpVacDaysRemain.Text = employeeName + " has taken " + totalHolidayDays + " days from " + empMaxDays + ", There are " + remainingDays + " days left for him";
+                        EmpVacDaysRemain.Text =
+                            $"<p>The employee name \"{employeeName}\"</p>" +
+                            $"<p>The taken days are \"{totalHolidayDays}\" days</p>" +
+                            $"<p>From the available maximum number of days \"{empMaxDays}\" days</p>" +
+                            $"<p>So the remaining number of days are \"{remainingDays}\" days</p> <br/>";
                     }
                 }
             }
         }
 
+        protected void ExportPDF_Click(object sender, EventArgs e)
+        {
+            // Create label content
+            string labelContent = "Label content.";
 
+            // Specify the file path where the PDF will be saved
+            string filePath = Server.MapPath("~/App_Data/exported.pdf");
+
+            // Check if the GridView has data source
+            if (gvEmpReport.DataSource != null)
+            {
+                // Cast the data source of the GridView to a DataTable
+                DataTable dataTable = gvEmpReport.DataSource as DataTable;
+
+                // Generate the PDF and save it to the specified file path
+                PdfGenerator.GeneratePdfFromDataSource(dataTable, labelContent, filePath);
+            }
+        }
     }
 }

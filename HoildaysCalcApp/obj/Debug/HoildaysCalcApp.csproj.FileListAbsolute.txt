@@ -181,7 +181,6 @@ D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\System.Threading.Tasks.E
 D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\System.Web.Optimization.dll
 D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\WebGrease.dll
 D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\ZstdSharp.dll
-D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\BouncyCastle.Crypto.xml
 D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\Google.Protobuf.pdb
 D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\Google.Protobuf.xml
 D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\K4os.Compression.LZ4.xml
@@ -206,3 +205,11 @@ D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\obj\Debug\HoildaysCalcApp.cs
 D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\obj\Debug\HoildaysCalcApp.csproj.CopyComplete
 D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\obj\Debug\HoildaysCalcApp.dll
 D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\obj\Debug\HoildaysCalcApp.pdb
+D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\PdfSharp.Charting.dll
+D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\PdfSharp.dll
+D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\PdfSharp.xml
+D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\PdfSharp.Charting.xml
+D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\de\PdfSharp.resources.dll
+D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\de\PdfSharp.Charting.resources.dll
+D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\itextsharp.dll
+D:\C# projects\VacancyReserveSystem\HoildaysCalcApp\bin\itextsharp.xml
